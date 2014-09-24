@@ -14,18 +14,22 @@ parser.add_argument("--sousGenrePlaylist", help="sousgenre%pourcentage", nargs =
 
 args = parser.parse_args()
 
-def verification_Qte(quantite):
-    return int(quantite)
+def validerQuantite(quantite):
+    try:
+        good = int(quantite)
+        return good
+    except ValueError:
+        print("La valeur saisie n'est pas un entier : '" + quantite + "'")
+        exit(1)
 
-args.genrePlaylist[1] = verification_Qte(args.genrePlaylist[1])
+args.genrePlaylist[1] = validerQuantite(args.genrePlaylist[1])
 
-print(args)
 
-# print("duree : " + str(args.dureePlaylist))
-# print("format : " + args.formatPlaylist)
-# print("nom du fichier : " +args.nomFichierPlaylist)
-# print("titres choisis : " +args.titrePlaylist)
-# print("artistes choisis : " +args.artistePlaylist)
-# print("album choisis : " +args.albumPlaylist)
-# print("genre choisis : " +args.genrePlaylist[0] + args.genrePlaylist[1])
-# print("sous genre choisis : " +args.sousGenrePlaylist)
+if args.genrePlaylist[1] > 0 and args.genrePlaylist[1] <= 100:
+    print(args)
+else:
+    print("le pourcentage doit être compris entre 0 et 100")
+
+
+
+
