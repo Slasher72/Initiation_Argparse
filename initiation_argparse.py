@@ -1,4 +1,6 @@
 import argparse
+import logging
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("dureePlaylist", type = int, help="duree de la playlist en minutes")
