@@ -21,25 +21,31 @@ args = parser.parse_args()
 
 logging.debug(args)
 
-def validerQuantite(quantite):
+
+def validerQuantite(arg, nomarg):
+    logging.info("verifie argument 2")
     try:
-        logging.info("début du programme de verif")
-        good = int(quantite)
-        if good <= 0:
-            raise Exception('UnderGround')
-        return good
-        logging.info("La saisie est correct")
+        arg[1] = int(arg[1])
+        if arg[1]<0:
+            arg[1] = abs(arg[1])
+            logging.warning('La quantité saisie doit etre positive')
+            logging.info('Nombre négatif transformé en positif: ' + str(arg[1]))
+        elif arg[1]>100:
+            arg[1] = None
+            logging.warning('La quantité saisie est supérieur à 100')
+            logging.info('Nombre supérieur à 100 transformé en : ' + str(arg[1]))
+        return True
+    setattr(arg, nomarg, [arg[0], nomarg[1]])
     except ValueError:
-        logging.error("La valeur saisie pour la quantité n'est pas une valeur numérique : '" + quantite + "'")
+        print ("Impossible de convertir \"" + arg[1] + "\" en nombre entier !")
+        logging.error('Impossible de convertir ' + arg[1] + ' en nombre entier !')
+        logging.debug(' *****************************************')
         exit(1)
-    except Exception as err:
-        if err.args[0] == 'UnderGround':
-            logging.error("La valeur saisie pour la quantité ne peut être négative : '%i'" % genre)
-            exit(1)
 
-args.genrePlaylist[1] = validerQuantite(args.genrePlaylist[1])
+if validerQuantite(args.genrePlaylist, args.genrePlaylist[1]):
+    print ('ok')
 
-
+print (type(args.genrePlaylist[1]))
 
 
 
