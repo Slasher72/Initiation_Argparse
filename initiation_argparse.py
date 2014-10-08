@@ -1,8 +1,10 @@
-import argparse
+from Mes_Modules.Configuration import LOGIN_PGS, PASS_PGS
 import logging
+import argparse
 import sys
 
-logging.basicConfig(filename = "journal_log.log", level = logging.DEBUG)
+logging.basicConfig(filename ="Journal_log.log", level = logging.DEBUG)
+logging.info("Mise en marche du programme")
 
 parser = argparse.ArgumentParser()
 
@@ -11,36 +13,38 @@ parser.add_argument("formatPlaylist", choices = ["m3u","xspf","pls"], help="form
 parser.add_argument("nomFichierPlaylist", help="nom du fichier de sortie")
 
 
-parser.add_argument("--T", "--titrePlaylist", help="titre choisis")
-parser.add_argument("--a", "--artistePlaylist", help="nom de l'artiste")
-parser.add_argument("--al", "--albumPlaylist", help="album présent dans la playlist")
-parser.add_argument("--g", "--genrePlaylist", help="genre%pourcentage", nargs = 2)
-parser.add_argument("--sg", "--sousGenrePlaylist", help="sousgenre%pourcentage", nargs = 2)
+parser.add_argument("-t", "--titrePlaylist", help="titre choisis")
+parser.add_argument("-ar", "--artistePlaylist", help="nom de l'artiste")
+parser.add_argument("-al", "--albumPlaylist", help="album présent dans la playlist")
+parser.add_argument("-g", "--genrePlaylist", help="genre%pourcentage", nargs=2)
 
 args = parser.parse_args()
 
-Logging.info(args.dureePlaylist)
-Logging.info(args.formatPlaylist)
-Logging.info(args.nomFichierPlaylist)
+
+# On affiche les arguments obligatoire
+logging.info(args.dureePlaylist)
+logging.info(args.formatPlaylist)
+logging.info(args.nomFichierPlaylist)
 
 
-def validerQuantite(quantite):
+def verifier_mes_quantite(quantite):
     try:
-        logging.info("début du programme de verif")
+        logging.info("Mise en marche de la fonction")
         genre = abs(int(quantite))
         if 0 < genre > 100:
             raise Exception('Erreur')
         return genre
-        logging.info("La saisie est correct")
     except ValueError:
         logging.error("La valeur saisie pour la quantité n'est pas une valeur numérique : '" + quantite + "'")
         exit(1)
     except Exception as err:
         if err.args[0] == 'Erreur':
-            logging.error("La valeur saisie pour la quantité ne peut être négative : '%i'" % genre)
+            logging.error("La valeur saisie pour la quantité ne peut être négative ou supérieur à 100: '%i'" % genre)
             exit(1)
 
-args.genrePlaylist[1] = validerQuantite(args.genrePlaylist[1])
+#print(args)
+args.genrePlaylist[1] = verifier_mes_quantite(args.genrePlaylist[1])
+
 
 
 for argument in ['titrePlaylist','artistePlaylist','albumPlaylist','genrePlaylist']:
@@ -50,8 +54,6 @@ for argument in ['titrePlaylist','artistePlaylist','albumPlaylist','genrePlaylis
         logging.info(' Argument --' + argument + ' :\t' + getattr(args, argument)[0] + ' ; ' + str(getattr(args, argument)[1]))
 verifier_mes_quantite(getattr(args, argument))
 
-
 logging.debug(' *****************************************')
 logging.shutdown()
 exit(0)
-
