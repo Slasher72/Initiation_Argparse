@@ -1,59 +1,39 @@
-from Mes_Modules.Configuration import LOGIN_PGS, PASS_PGS
+
 import logging
+import Mes_Modules.Fonctions
+import Mes_Modules.arguments
 import argparse
 import sys
+from Mes_Modules import Fonctions
+from Mes_Modules.arguments import arguments_generals, arguments_optionnels
 
-logging.basicConfig(filename ="Journal_log.log", level = logging.DEBUG)
+
+#logging.basicConfig(filename ="Journal_log.log", level = logging.DEBUG)
+logging.basicConfig(level = logging.DEBUG)
 logging.info("Mise en marche du programme")
 
-parser = argparse.ArgumentParser()
-
-parser.add_argument("dureePlaylist", type = int, help="duree de la playlist en minutes")
-parser.add_argument("formatPlaylist", choices = ["m3u","xspf","pls"], help="format de sortie de la playlist")
-parser.add_argument("nomFichierPlaylist", help="nom du fichier de sortie")
-
-
-parser.add_argument("-t", "--titrePlaylist", help="titre choisis")
-parser.add_argument("-ar", "--artistePlaylist", help="nom de l'artiste")
-parser.add_argument("-al", "--albumPlaylist", help="album présent dans la playlist")
-parser.add_argument("-g", "--genrePlaylist", help="genre%pourcentage", nargs=2)
-
-args = parser.parse_args()
-
+arguments_generals
+arguments_optionnels
 
 # On affiche les arguments obligatoire
-logging.info(args.dureePlaylist)
-logging.info(args.formatPlaylist)
-logging.info(args.nomFichierPlaylist)
+Mes_Modules.arguments.arguments_generals()
+Mes_Modules.arguments.arguments_optionnels()
+args = Mes_Modules.arguments.parser.parse_args()
+logging.info(repr(args))
 
-
-def verifier_mes_quantite(quantite):
-    try:
-        logging.info("Mise en marche de la fonction")
-        genre = abs(int(quantite))
-        if 0 < genre > 100:
-            raise Exception('Erreur')
-        return genre
-    except ValueError:
-        logging.error("La valeur saisie pour la quantité n'est pas une valeur numérique : '" + quantite + "'")
-        exit(1)
-    except Exception as err:
-        if err.args[0] == 'Erreur':
-            logging.error("La valeur saisie pour la quantité ne peut être négative ou supérieur à 100: '%i'" % genre)
-            exit(1)
+Fonctions.verification_du_temps(args.dureePlaylist)
+args.genrePlaylist[1] = Mes_Modules.Fonctions.verifier_mes_quantite(args.genrePlaylist[1])
+logging.info(repr(args))
+#fonctions.gestion_Pourcentage()
 
 #print(args)
-args.genrePlaylist[1] = verifier_mes_quantite(args.genrePlaylist[1])
+
+#fonctions.aVoir()
 
 
+#modules.arguments.args.genrePlaylist[1] = fonctions.verifier_mes_quantite(modules.arguments.args.genrePlaylist[1])
 
-for argument in ['titrePlaylist','artistePlaylist','albumPlaylist','genrePlaylist']:
-# Si l'argument est renseigné
-    if getattr(args, argument) is not None:
-        # On écrit la valeur de ses ss-arg dans le fichier de logs
-        logging.info(' Argument --' + argument + ' :\t' + getattr(args, argument)[0] + ' ; ' + str(getattr(args, argument)[1]))
-verifier_mes_quantite(getattr(args, argument))
-
-logging.debug(' *****************************************')
+logging.info('Tout a été opérationel')
+logging.info(' *****************FIN************************')
 logging.shutdown()
 exit(0)
